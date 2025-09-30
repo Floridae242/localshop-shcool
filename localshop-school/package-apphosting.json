@@ -1,0 +1,42 @@
+{
+  "name": "agrilink-school-model",
+  "version": "1.0.0",
+  "description": "AgriLink School Model - Full-stack agricultural education platform",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "build": "echo 'Build complete - ready for production'",
+    "test": "echo 'No tests specified'",
+    "deploy": "firebase deploy --only apphosting"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "mysql2": "^3.6.0",
+    "cors": "^2.8.5",
+    "qrcode": "^1.5.4",
+    "uuid": "^9.0.0",
+    "json2csv": "^5.0.7",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "agriculture",
+    "education",
+    "school",
+    "organic-farming",
+    "traceability",
+    "qr-code"
+  ],
+  "author": "Bhormaengnokkha School",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Floridae242/localshop-shcool.git"
+  }
+}

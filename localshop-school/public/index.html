@@ -1,50 +1,413 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>LocalShop School Model</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="/css/styles.css" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriLink School Model - โรงเรียนบ้านแม่ฮ้อยเงิน</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- 
+      initialize the SDK after all desired features are loaded, set useEmulator to false
+      to avoid connecting the SDK to running emulators.
+    -->
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container">
-    <a class="navbar-brand" href="/">LocalShop</a>
-    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
-    <div id="nav" class="collapse navbar-collapse">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="/products.html">Products</a></li>
-        <li class="nav-item"><a class="nav-link" href="/order.html">Order</a></li>
-        <li class="nav-item"><a class="nav-link" href="/about.html">About</a></li>
-        <li class="nav-item"><a class="nav-link" href="/dashboard.html">Dashboard</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
-<header class="py-5 bg-success text-white">
-  <div class="container"><h1 class="display-5">โรงเรียนแม่ฮ้อยเงิน – School Farm Hub</h1><p class="lead">โปร่งใส ง่าย ใช้มือถือเครื่องเดียว เชื่อมชุมชน</p></div>
-</header>
-<section class="container py-4">
-  <h2 class="h4 mb-3">อัลบั้มกิจกรรม</h2>
-  <div id="album" class="row g-3"></div>
-</section>
-<footer class="py-4 bg-light"><div class="container small">© 2025 LocalShop School Model</div></footer>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-fetch('/api/media').then(r=>r.json()).then(list=>{
-  const grid = document.getElementById('album');
-  grid.innerHTML = list.map(m=>`
-    <div class="col-6 col-md-4 col-lg-3">
-      <div class="card h-100">
-        <img class="card-img-top" src="${m.url}" alt="${m.title}" />
-        <div class="card-body">
-          <h5 class="card-title">${m.title}</h5>
-          <p class="card-text small text-muted">${m.caption||''}</p>
+    <!-- Enhanced Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#" onclick="scrollToSection('home')">
+                <i class="fas fa-seedling me-2"></i>โรงเรียนบ้านแม่ฮ้อยเงิน
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#home" onclick="setActive(this); scrollToSection('home')">
+                            <i class="fas fa-home me-1"></i>หน้าแรก
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about" onclick="setActive(this); scrollToSection('about')">
+                            <i class="fas fa-info-circle me-1"></i>เกี่ยวกับ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="products.html">
+                            <i class="fas fa-leaf me-1"></i>สินค้า
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="order.html">
+                            <i class="fas fa-shopping-cart me-1"></i>สั่งซื้อ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">
+                            <i class="fas fa-tachometer-alt me-1"></i>จัดการ
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
-      </div>
-    </div>`).join('');
-});
-</script>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="container">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold text-white mb-4">
+                        โรงเรียนบ้านแม่ฮ้อยเงิน<br>
+                        <span class="text-warning">AgriLink School Model</span>
+                    </h1>
+                    <p class="lead text-white mb-4">
+                        เชื่อมโยงการเกษตรสู่การศึกษา สร้างความยั่งยืนให้ชุมชน
+                        <br>Connecting Agriculture to Education for Sustainable Communities
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="products.html" class="btn btn-warning btn-lg">
+                            <i class="fas fa-shopping-basket"></i> ดูสินค้า
+                        </a>
+                        <a href="#about" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-info-circle"></i> เรียนรู้เพิ่มเติม
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image">
+                        <img src="img/greenhouse.jpg" alt="School Greenhouse" class="img-fluid rounded-3 shadow-lg">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">ทำไมต้องเลือก AgriLink School Model?</h2>
+                <p class="lead text-muted">Why Choose AgriLink School Model?</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-leaf text-success fs-1"></i>
+                        </div>
+                        <h4>ปลอดสารพิษ</h4>
+                        <p class="text-muted">ผัักปลอดสารเคมี ปลูกด้วยวิธีธรรมชาติ 100%</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-qrcode text-primary fs-1"></i>
+                        </div>
+                        <h4>ตรวจสอบได้</h4>
+                        <p class="text-muted">QR Code ติดตามจากแปลงปลูกถึงโต๊ะอาหาร</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-graduation-cap text-warning fs-1"></i>
+                        </div>
+                        <h4>เพื่อการศึกษา</h4>
+                        <p class="text-muted">สร้างรายได้เสริมให้โรงเรียนและชุมชน</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <img src="img/pond.jpg" alt="School Pond" class="img-fluid rounded-3 shadow">
+                </div>
+                <div class="col-lg-6">
+                    <h2 class="fw-bold mb-4">เกี่ยวกับโรงเรียนบ้านแม่ฮ้อยเงิน</h2>
+                    <p class="lead mb-4">
+                        โรงเรียนบ้านแม่ฮ้อยเงิน ตั้งอยู่ในพื้นที่ชนบทจังหวัดเชียงใหม่ 
+                        เป็นโรงเรียนที่ผสานการเรียนการสอนกับการเกษตรอินทรีย์ สร้างคนดีให้ชุมชน
+                    </p>
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <div class="stat-card text-center p-3 border rounded">
+                                <h3 class="text-success fw-bold">50+</h3>
+                                <p class="mb-0">นักเรียน</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-card text-center p-3 border rounded">
+                                <h3 class="text-success fw-bold">5+</h3>
+                                <p class="mb-0">ครู</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-card text-center p-3 border rounded">
+                                <h3 class="text-success fw-bold">5</h3>
+                                <p class="mb-0">ไร่ พื้นที่เกษตร</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-card text-center p-3 border rounded">
+                                <h3 class="text-success fw-bold">20+</h3>
+                                <p class="mb-0">ชนิดผักปลูก</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="about.html" class="btn btn-success">อ่านเรื่องราวทั้งหมด</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Preview -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">สินค้าจากโรงเรียน</h2>
+                <p class="lead text-muted">Fresh Products from Our School Farm</p>
+            </div>
+            <div class="row g-4" id="featured-products">
+                <!-- Products will be loaded here -->
+            </div>
+            <div class="text-center mt-5">
+                <a href="products.html" class="btn btn-success btn-lg">ดูสินค้าทั้งหมด</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="py-5 bg-success text-white">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4><i class="fas fa-map-marker-alt"></i> ที่อยู่</h4>
+                    <p>123 หมู่ 1 ตำบลบ้านแม่ฮ้อยเงิน<br>อำเภอดอยสะเก็ด จังหวัดเชียงใหม่ 50220</p>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <h4><i class="fas fa-phone"></i> ติดต่อ</h4>
+                    <p>โทร: 053-840-699<br>อีเมล: mng1301766@gmail.com</p>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <h4><i class="fas fa-clock"></i> เวลาทำการ</h4>
+                    <p>จันทร์ - ศุกร์: 8:00 - 16:30<br>เสาร์ - อาทิตย์: 8:00 - 12:00</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-4 bg-dark text-white text-center">
+        <div class="container">
+            <p>&copy; 2025 โรงเรียนบ้านแม่ฮ้อยเงิน | AgriLink School Model | สร้างด้วย ❤️ เพื่อการศึกษา</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Enhanced Navigation & UX Script -->
+    <script>
+        // Enhanced Navigation Functions
+        function setActive(clickedLink) {
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            // Add active class to clicked link
+            clickedLink.classList.add('active');
+        }
+
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                const navHeight = document.querySelector('.navbar').offsetHeight;
+                const targetPosition = section.offsetTop - navHeight - 20;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        // Auto-highlight navigation on scroll
+        function updateActiveNavOnScroll() {
+            const sections = ['home', 'about'];
+            const navHeight = document.querySelector('.navbar').offsetHeight;
+            const scrollPosition = window.scrollY + navHeight + 50;
+
+            sections.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                const navLink = document.querySelector(`a[href="#${sectionId}"]`);
+                
+                if (section && navLink) {
+                    const sectionTop = section.offsetTop;
+                    const sectionBottom = sectionTop + section.offsetHeight;
+                    
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+                        document.querySelectorAll('.nav-link').forEach(link => {
+                            link.classList.remove('active');
+                        });
+                        navLink.classList.add('active');
+                    }
+                }
+            });
+        }
+
+        // Navbar scroll effect
+        function handleNavbarScroll() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.15)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.1)';
+            }
+        }
+
+        // Loading animation for products
+        function showLoading(containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <div class="loading-spinner me-3"></div>
+                    <span class="text-muted">กำลังโหลดข้อมูล...</span>
+                </div>
+            `;
+        }
+
+        // Enhanced product loading with animations
+        async function loadFeaturedProducts() {
+            try {
+                showLoading('featured-products');
+                
+                // Simulate loading delay for better UX
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
+                const sampleProducts = [
+                    {
+                        id: 1,
+                        name: 'ผักกาดขาว',
+                        name_en: 'Chinese Cabbage',
+                        price: 25.00,
+                        image: 'img/lettuce.jpg',
+                        description: 'ผักกาดขาวสด ปลอดสารพิษ จากแปลงปลูกของโรงเรียน',
+                        badge: 'ยอดนิยม'
+                    },
+                    {
+                        id: 2,
+                        name: 'เห็ดนางฟ้า',
+                        name_en: 'Oyster Mushroom',
+                        price: 45.00,
+                        image: 'img/mushroom.jpg',
+                        description: 'เห็ดนางฟ้าสด ปลูกในโรงเรือนควบคุมอุณหภูมิ',
+                        badge: 'สินค้าใหม่'
+                    },
+                    {
+                        id: 3,
+                        name: 'แตงกวา',
+                        name_en: 'Cucumber',
+                        price: 20.00,
+                        image: 'img/cucumber.jpg',
+                        description: 'แตงกวาสด กรอบ หวาน ไร้สารเคมี',
+                        badge: 'ราคาดี'
+                    }
+                ];
+
+                const container = document.getElementById('featured-products');
+                container.innerHTML = sampleProducts.map((product, index) => `
+                    <div class="col-md-4" style="animation: fadeInUp 0.6s ease-out ${index * 0.2}s both;">
+                        <div class="card product-card h-100 position-relative">
+                            <div class="position-absolute top-0 end-0 m-3 z-3">
+                                <span class="badge bg-success">${product.badge}</span>
+                            </div>
+                            <img src="${product.image}" class="card-img-top" alt="${product.name}" loading="lazy">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title fw-bold">${product.name}</h5>
+                                <p class="card-text text-muted small">${product.name_en}</p>
+                                <p class="card-text">${product.description}</p>
+                                <div class="mt-auto">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="h5 text-success mb-0 fw-bold">฿${product.price.toFixed(2)}</span>
+                                        <a href="products.html" class="btn btn-success btn-sm">
+                                            <i class="fas fa-eye me-1"></i>ดูรายละเอียด
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading products:', error);
+                document.getElementById('featured-products').innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-exclamation-triangle text-warning fs-2 mb-3"></i>
+                        <p class="text-muted">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>
+                        <button class="btn btn-outline-success" onclick="loadFeaturedProducts()">
+                            <i class="fas fa-redo me-1"></i>ลองใหม่
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Smooth scroll for anchor links
+        document.addEventListener('click', function(e) {
+            if (e.target.matches('a[href^="#"]')) {
+                e.preventDefault();
+                const targetId = e.target.getAttribute('href').substring(1);
+                scrollToSection(targetId);
+            }
+        });
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load products
+            loadFeaturedProducts();
+            
+            // Add scroll listeners
+            window.addEventListener('scroll', function() {
+                updateActiveNavOnScroll();
+                handleNavbarScroll();
+            });
+            
+            // Add loading states to buttons
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    if (this.href && this.href.includes('.html')) {
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>กำลังโหลด...';
+                    }
+                });
+            });
+            
+            // Add hover effects to cards
+            document.addEventListener('mouseover', function(e) {
+                if (e.target.closest('.feature-card, .product-card')) {
+                    e.target.closest('.feature-card, .product-card').style.transform = 'translateY(-5px)';
+                }
+            });
+            
+            document.addEventListener('mouseout', function(e) {
+                if (e.target.closest('.feature-card, .product-card')) {
+                    e.target.closest('.feature-card, .product-card').style.transform = 'translateY(0)';
+                }
+            });
+            
+            console.log('🌱 AgriLink School Model - Ready!');
+        });
+    </script>
 </body>
 </html>

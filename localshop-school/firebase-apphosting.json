@@ -1,0 +1,31 @@
+{
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [{
+      "source": "**",
+      "destination": "/index.html"
+    }]
+  },
+  "apphosting": {
+    "source": ".",
+    "nodeVersion": "18",
+    "concurrency": 80,
+    "cpu": 1,
+    "memory": "1GiB",
+    "minInstances": 0,
+    "maxInstances": 10,
+    "buildCommand": "npm install && npm run build",
+    "startCommand": "npm start",
+    "env": [
+      {
+        "variable": "NODE_ENV",
+        "value": "production"
+      }
+    ]
+  }
+}

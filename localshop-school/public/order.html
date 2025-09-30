@@ -1,24 +1,209 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Order – LocalShop</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-<link href="/css/styles.css" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สั่งซื้อสินค้า - AgriLink School Model</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="container py-4">
-  <h1 class="h3 mb-3">สั่งซื้อ</h1>
-  <form id="orderForm" class="row g-3">
-    <div class="col-md-6"><label class="form-label">ชื่อผู้สั่ง</label><input class="form-control" name="buyer_name" required></div>
-    <div class="col-md-6"><label class="form-label">โทรศัพท์</label><input class="form-control" name="phone"></div>
-    <div class="col-md-6"><label class="form-label">สินค้า</label><select class="form-select" name="product_id" id="productSelect" required></select></div>
-    <div class="col-md-6"><label class="form-label">จำนวน</label><input type="number" class="form-control" name="qty" min="1" value="1" required></div>
-    <div class="col-12"><button class="btn btn-success">ยืนยันการสั่งซื้อ</button></div>
-    <div class="col-12"><div id="msg"></div></div>
-  </form>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/js/order.js"></script>
+    <!-- Enhanced Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-seedling me-2"></i>AgriLink School
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home me-1"></i>หน้าแรก
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">
+                            <i class="fas fa-info-circle me-1"></i>เกี่ยวกับ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="products.html">
+                            <i class="fas fa-leaf me-1"></i>สินค้า
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="order.html">
+                            <i class="fas fa-shopping-cart me-1"></i>สั่งซื้อ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">
+                            <i class="fas fa-tachometer-alt me-1"></i>จัดการ
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="py-5 mt-5 bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-5 fw-bold text-success mb-3">สั่งซื้อผลิตภัณฑ์จากโรงเรียน</h1>
+                    <p class="lead text-muted">สั่งซื้อผักปลอดสารพิษและผลิตภัณฑ์จากแปลงปลูกโรงเรียน</p>
+                </div>
+                <div class="col-lg-4">
+                    <div class="text-center">
+                        <i class="fas fa-shopping-basket text-success" style="font-size: 4rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Form -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-header bg-success text-white">
+                            <h4 class="mb-0">
+                                <i class="fas fa-clipboard-list me-2"></i>แบบฟอร์มสั่งซื้อ
+                            </h4>
+                        </div>
+                        <div class="card-body p-4">
+                            <form id="orderForm" class="needs-validation" novalidate>
+                                <div class="row g-4">
+                                    <!-- Customer Information -->
+                                    <div class="col-12">
+                                        <h5 class="fw-bold text-success mb-3">
+                                            <i class="fas fa-user me-2"></i>ข้อมูลผู้สั่งซื้อ
+                                        </h5>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">ชื่อ-นามสกุล <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="buyer_name" required 
+                                               placeholder="กรุณากรอกชื่อ-นามสกุล">
+                                        <div class="invalid-feedback">กรุณากรอกชื่อ-นามสกุล</div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">เบอร์โทรศัพท์ <span class="text-danger">*</span></label>
+                                        <input type="tel" class="form-control" name="phone" required 
+                                               placeholder="08X-XXX-XXXX" pattern="[0-9]{10}">
+                                        <div class="invalid-feedback">กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง</div>
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold">ที่อยู่จัดส่ง</label>
+                                        <textarea class="form-control" name="address" rows="3" 
+                                                  placeholder="ระบุที่อยู่สำหรับการจัดส่ง (ถ้ามี)"></textarea>
+                                    </div>
+
+                                    <!-- Product Selection -->
+                                    <div class="col-12 mt-4">
+                                        <h5 class="fw-bold text-success mb-3">
+                                            <i class="fas fa-leaf me-2"></i>เลือกสินค้า
+                                        </h5>
+                                    </div>
+                                    
+                                    <div class="col-md-8">
+                                        <label class="form-label fw-bold">สินค้า <span class="text-danger">*</span></label>
+                                        <select class="form-select" name="product_id" id="productSelect" required>
+                                            <option value="">เลือกสินค้า...</option>
+                                        </select>
+                                        <div class="invalid-feedback">กรุณาเลือกสินค้า</div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold">จำนวน <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <button type="button" class="btn btn-outline-secondary" onclick="decreaseQty()">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                            <input type="number" class="form-control text-center" name="qty" 
+                                                   id="qtyInput" min="1" max="100" value="1" required>
+                                            <button type="button" class="btn btn-outline-secondary" onclick="increaseQty()">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="invalid-feedback">กรุณาระบุจำนวน</div>
+                                    </div>
+
+                                    <!-- Order Summary -->
+                                    <div class="col-12" id="orderSummary" style="display: none;">
+                                        <div class="alert alert-info">
+                                            <h6 class="fw-bold">
+                                                <i class="fas fa-calculator me-2"></i>สรุปคำสั่งซื้อ
+                                            </h6>
+                                            <div id="summaryContent"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Order Note -->
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold">หมายเหตุ</label>
+                                        <textarea class="form-control" name="note" rows="2" 
+                                                  placeholder="ข้อความเพิ่มเติม (ถ้ามี)"></textarea>
+                                    </div>
+
+                                    <!-- Submit Button -->
+                                    <div class="col-12 mt-4">
+                                        <button type="submit" class="btn btn-success btn-lg w-100">
+                                            <i class="fas fa-check-circle me-2"></i>ยืนยันการสั่งซื้อ
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Message Container -->
+                    <div id="msg" class="mt-4"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-check-circle me-2"></i>สั่งซื้อสำเร็จ!
+                    </h5>
+                </div>
+                <div class="modal-body text-center">
+                    <i class="fas fa-check-circle text-success display-4 mb-3"></i>
+                    <h4>ขอบคุณสำหรับการสั่งซื้อ!</h4>
+                    <p class="text-muted">เราจะติดต่อกลับไปเพื่อยืนยันคำสั่งซื้อของคุณในเร็วๆ นี้</p>
+                    <div id="orderDetails" class="mt-3"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="newOrder()">สั่งซื้อใหม่</button>
+                    <a href="products.html" class="btn btn-outline-success">ดูสินค้าอื่น</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-4 bg-success text-white text-center mt-5">
+        <div class="container">
+            <p class="mb-0">&copy; 2025 โรงเรียนบอเมืองน้อกขา | AgriLink School Model</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/order.js"></script>
 </body>
 </html>
