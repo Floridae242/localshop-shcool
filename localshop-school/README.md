@@ -12,7 +12,9 @@
 
 ## 📖 Project Overview
 
-**AgriLink School Model** is a comprehensive digital platform that bridges the gap between school farm production and community consumption. Developed for **Baan Maehoyngoen School** (Doi Saket, Chiang Mai), this system addresses the critical challenge of small rural schools struggling with limited budgets while having surplus agricultural products.
+**AgriLink School Model** is a comprehensive digital platform that bridges the gap between school farm production and community consumption. Developed for **Baan Maehoyngoen School** (219 หมู่ 13 ตำบลแม่ออน อำเภอดอยสะเก็ด จังหวัดเชียงใหม่), this system addresses the critical challenge of small rural schools struggling with limited budgets while having surplus agricultural products.
+
+**School Website**: [www.bmngschool.ac.th](https://www.bmngschool.ac.th)
 
 ### 🎯 Core Problem Solved
 - **Budget Crisis**: 80% of school's 100,000฿ annual budget goes to electricity

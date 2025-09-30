@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const cors = require('cors');
 const path = require('path');
 const { Parser } = require('json2csv');
@@ -14,10 +14,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'app',
+  password: process.env.DB_PASSWORD || 'password',
+  database: process.env.DB_NAME || 'localshop_school',
+  port: process.env.DB_PORT || 3306
 });
 connection.connect(err => {
   if (err) { console.error('Error connecting to MySQL:', err); return; }

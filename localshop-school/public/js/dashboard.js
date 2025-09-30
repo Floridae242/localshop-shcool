@@ -81,3 +81,27 @@ window.setStatus = async (id,status)=>{
   const res = await authFetch(`/api/orders/${id}/status`, { method:'PUT', body: JSON.stringify({status}) });
   if(res.ok){ loadOrders(); }
 }
+
+// Delete product function
+window.del = async (id) => {
+  if(!confirm('คุณต้องการลบสินค้านี้หรือไม่?')) return;
+  
+  const res = await authFetch(`/api/products/${id}`, { method: 'DELETE' });
+  if(res.ok) {
+    alert('ลบสินค้าเรียบร้อยแล้ว');
+    loadProducts();
+  } else {
+    alert('เกิดข้อผิดพลาดในการลบสินค้า');
+  }
+}
+
+// Edit product function  
+window.edit = (product) => {
+  document.getElementById('productId').value = product.id;
+  document.getElementById('name').value = product.name;
+  document.getElementById('category').value = product.category;
+  document.getElementById('price').value = product.price;
+  document.getElementById('unit').value = product.unit;
+  document.getElementById('stock').value = product.stock;
+  document.getElementById('image_url').value = product.image_url || '';
+}
