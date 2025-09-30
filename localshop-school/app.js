@@ -4,6 +4,8 @@ const mysql = require('mysql');
 const cors = require('cors');
 const path = require('path');
 const { Parser } = require('json2csv');
+const QRCode = require('qrcode');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 app.use(cors());
@@ -76,14 +78,38 @@ app.get('/api/orders', requireAdmin, (req,res)=>{
 
 app.post('/api/orders', (req,res)=>{
   const { buyer_name, phone, product_id, qty } = req.body;
-  connection.query('SELECT price FROM products WHERE id=?', [product_id], (err,rows)=>{
+  connection.query('SELECT name, price FROM products WHERE id=?', [product_id], (err,rows)=>{
     if(err||rows.length===0){ return res.status(400).json({message:'Invalid product'}); }
-    const price = rows[0].price; const total = Number(price) * Number(qty);
-    const insertQ = 'INSERT INTO orders (buyer_name,phone,product_id,qty,total,status) VALUES (?,?,?,?,?,\'NEW\')';
-    connection.query(insertQ, [buyer_name,phone,product_id,qty,total], (err2, result)=>{
+    const price = rows[0].price; 
+    const productName = rows[0].name;
+    const total = Number(price) * Number(qty);
+    const traceId = uuidv4();
+    const insertQ = 'INSERT INTO orders (buyer_name,phone,product_id,qty,total,status,trace_id) VALUES (?,?,?,?,?,\'NEW\',?)';
+    connection.query(insertQ, [buyer_name,phone,product_id,qty,total,traceId], (err2, result)=>{
       if(err2){ console.error('Error creating order:', err2); return res.status(500).json({message:'Error creating order'}); }
       connection.query('UPDATE products SET stock=GREATEST(stock-?,0) WHERE id=?', [qty, product_id]);
-      res.status(201).json({ id: result.insertId, total });
+      
+      // Generate QR Code for traceability
+      const qrData = {
+        orderId: result.insertId,
+        traceId: traceId,
+        product: productName,
+        qty: qty,
+        buyer: buyer_name,
+        school: 'Baan Maehoyngoen School',
+        verifyUrl: `${req.protocol}://${req.get('host')}/api/trace/${traceId}`
+      };
+      
+      QRCode.toDataURL(JSON.stringify(qrData), (qrErr, qrUrl) => {
+        if(qrErr) console.error('QR generation error:', qrErr);
+        res.status(201).json({ 
+          id: result.insertId, 
+          total, 
+          traceId,
+          qrCode: qrUrl,
+          verifyUrl: qrData.verifyUrl
+        });
+      });
     });
   });
 });
@@ -101,6 +127,35 @@ app.get('/api/media', (req,res)=>{
   connection.query('SELECT * FROM media ORDER BY id DESC', (err,rows)=>{
     if(err){ return res.status(500).json({message:'Error fetching album'}); }
     res.json(rows);
+  });
+});
+
+// QR Traceability
+app.get('/api/trace/:traceId', (req, res) => {
+  const { traceId } = req.params;
+  const q = `SELECT o.*, p.name AS product_name, p.category, p.unit 
+             FROM orders o JOIN products p ON p.id = o.product_id 
+             WHERE o.trace_id = ?`;
+  connection.query(q, [traceId], (err, rows) => {
+    if(err || rows.length === 0) {
+      return res.status(404).json({message: 'Order not found or invalid trace ID'});
+    }
+    const order = rows[0];
+    res.json({
+      verified: true,
+      school: 'โรงเรียนบ้านแม่ฮ้อยเงิน (Baan Maehoyngoen School)',
+      location: 'ดอยสะเก็ด, เชียงใหม่',
+      product: {
+        name: order.product_name,
+        category: order.category,
+        quantity: `${order.qty} ${order.unit}`,
+        total: `${order.total} บาท`
+      },
+      buyer: order.buyer_name,
+      orderDate: order.created_at,
+      status: order.status,
+      message: 'ผลผลิตปลอดภัย ตรวจสอบได้ จากโรงเรียนแม่ฮ้อยเงิน'
+    });
   });
 });
 

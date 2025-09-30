@@ -1,5 +1,341 @@
-:root{ --brand: #198754; }
-a{ text-decoration: none; }
-.navbar-brand{ font-weight: 700; }
-.card img{ object-fit: cover; height: 160px; }
-.btn-success{ background: var(--brand); border-color: var(--brand); }
+/* AgriLink School Model - Custom Styles */
+:root {
+  --brand-primary: #28a745;
+  --brand-secondary: #ffc107;
+  --brand-info: #007bff;
+  --brand-warning: #fd7e14;
+  --text-muted-light: #6c757d;
+  --border-radius: 0.5rem;
+  --box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --box-shadow-lg: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Typography & Base Styles */
+body {
+  font-family: 'Sarabun', 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+a {
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Navigation */
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--brand-primary) !important;
+}
+
+.navbar {
+  box-shadow: var(--box-shadow);
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+}
+
+.nav-link {
+  font-weight: 500;
+  padding: 0.75rem 1rem !important;
+}
+
+.nav-link:hover {
+  color: var(--brand-primary) !important;
+  transform: translateY(-1px);
+}
+
+/* Hero Sections */
+header.py-5 {
+  background: linear-gradient(135deg, var(--brand-primary), #20c997) !important;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+header.py-4 {
+  background: linear-gradient(135deg, var(--brand-info), #6610f2) !important;
+}
+
+/* Cards */
+.card {
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--box-shadow-lg);
+}
+
+.card-img-top {
+  object-fit: cover;
+  height: 200px;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  color: #2c3e50;
+}
+
+.card-text {
+  color: var(--text-muted-light);
+  line-height: 1.5;
+}
+
+/* Buttons */
+.btn {
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s ease-in-out;
+  min-height: 44px; /* Touch-friendly */
+}
+
+.btn-success {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: white;
+}
+
+.btn-success:hover {
+  background: #218838;
+  border-color: #1e7e34;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+.btn-primary {
+  background: var(--brand-info);
+  border-color: var(--brand-info);
+}
+
+.btn-warning {
+  background: var(--brand-secondary);
+  border-color: var(--brand-secondary);
+  color: #212529;
+}
+
+.btn-lg {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+}
+
+/* Forms */
+.form-control {
+  border-radius: var(--border-radius);
+  border: 2px solid #e9ecef;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  min-height: 44px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.form-select {
+  border-radius: var(--border-radius);
+  border: 2px solid #e9ecef;
+  min-height: 44px;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+/* Tables */
+.table {
+  font-size: 0.95rem;
+}
+
+.table th {
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+  padding: 1rem 0.75rem;
+}
+
+.table td {
+  padding: 0.875rem 0.75rem;
+  vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(40, 167, 69, 0.05);
+}
+
+/* Album Grid */
+#album .card {
+  margin-bottom: 1.5rem;
+}
+
+#album img {
+  height: 180px;
+  object-fit: cover;
+  width: 100%;
+}
+
+/* Dashboard Specific */
+.dashboard-stat {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: var(--box-shadow);
+  border-top: 4px solid var(--brand-primary);
+}
+
+.dashboard-stat h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--brand-primary);
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-stat p {
+  color: var(--text-muted-light);
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Status Badges */
+.status-new { background: var(--brand-info); }
+.status-confirmed { background: var(--brand-primary); }
+.status-cancelled { background: #dc3545; }
+
+/* QR Code Styling */
+.qr-container {
+  background: white;
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  text-align: center;
+  box-shadow: var(--box-shadow);
+  border: 2px dashed var(--brand-primary);
+}
+
+.qr-container img {
+  max-width: 200px;
+  height: auto;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+}
+
+/* Success/Error Messages */
+.alert {
+  border-radius: var(--border-radius);
+  border: none;
+  font-weight: 500;
+}
+
+.alert-success {
+  background: rgba(40, 167, 69, 0.1);
+  color: #155724;
+  border-left: 4px solid var(--brand-primary);
+}
+
+.alert-danger {
+  background: rgba(220, 53, 69, 0.1);
+  color: #721c24;
+  border-left: 4px solid #dc3545;
+}
+
+/* Footer */
+footer {
+  margin-top: auto;
+  background: #f8f9fa !important;
+  border-top: 1px solid #e9ecef;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .card-columns {
+    column-count: 1;
+  }
+  
+  .table-responsive {
+    font-size: 0.875rem;
+  }
+  
+  .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .btn-group .btn {
+    width: auto;
+    margin-bottom: 0;
+  }
+  
+  h1, .display-5 {
+    font-size: 1.75rem;
+  }
+  
+  h2, .display-6 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Loading States */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Print Styles */
+@media print {
+  .navbar, .btn, footer {
+    display: none !important;
+  }
+  
+  .container {
+    max-width: none !important;
+  }
+  
+  .card {
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+  }
+}
