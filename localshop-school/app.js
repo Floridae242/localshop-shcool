@@ -1,0 +1,133 @@
+require('dotenv').config();
+const express = require('express');
+const mysql = require('mysql');
+const cors = require('cors');
+const path = require('path');
+const { Parser } = require('json2csv');
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
+});
+connection.connect(err => {
+  if (err) { console.error('Error connecting to MySQL:', err); return; }
+  console.log('Connected to MySQL successfully');
+});
+
+function requireAdmin(req, res, next){
+  const pass = req.headers['x-admin-pass'] || req.query.admin;
+  if (pass === process.env.ADMIN_PASS) return next();
+  return res.status(401).json({ message: 'Unauthorized' });
+}
+
+app.get('/api', (req,res)=> res.json({ ok:true, service:'LocalShop API' }));
+
+// Products
+app.get('/api/products', (req,res)=>{
+  connection.query('SELECT * FROM products ORDER BY id DESC', (err,rows)=>{
+    if(err){ console.error('Error fetching products:', err); return res.status(500).json({message:'Error fetching products'}); }
+    res.json(rows);
+  });
+});
+
+app.post('/api/products', requireAdmin, (req,res)=>{
+  const { name, category, price, unit, stock, image_url } = req.body;
+  const q = 'INSERT INTO products (name,category,price,unit,stock,image_url) VALUES (?,?,?,?,?,?)';
+  connection.query(q, [name,category,price,unit,stock,image_url], (err, result)=>{
+    if(err){ console.error('Error creating product:', err); return res.status(500).json({message:'Error creating product'}); }
+    res.status(201).json({ id: result.insertId });
+  });
+});
+
+app.put('/api/products/:id', requireAdmin, (req,res)=>{
+  const { id } = req.params;
+  const { name, category, price, unit, stock, image_url } = req.body;
+  const q = 'UPDATE products SET name=?, category=?, price=?, unit=?, stock=?, image_url=? WHERE id=?';
+  connection.query(q, [name,category,price,unit,stock,image_url,id], (err)=>{
+    if(err){ console.error('Error updating product:', err); return res.status(500).json({message:'Error updating product'}); }
+    res.json({ ok:true });
+  });
+});
+
+app.delete('/api/products/:id', requireAdmin, (req,res)=>{
+  connection.query('DELETE FROM products WHERE id=?', [req.params.id], (err)=>{
+    if(err){ console.error('Error deleting product:', err); return res.status(500).json({message:'Error deleting product'}); }
+    res.json({ ok:true });
+  });
+});
+
+// Orders
+app.get('/api/orders', requireAdmin, (req,res)=>{
+  const q = `SELECT o.*, p.name AS product_name, p.unit FROM orders o
+             JOIN products p ON p.id=o.product_id ORDER BY o.id DESC`;
+  connection.query(q, (err,rows)=>{
+    if(err){ console.error('Error fetching orders:', err); return res.status(500).json({message:'Error fetching orders'}); }
+    res.json(rows);
+  });
+});
+
+app.post('/api/orders', (req,res)=>{
+  const { buyer_name, phone, product_id, qty } = req.body;
+  connection.query('SELECT price FROM products WHERE id=?', [product_id], (err,rows)=>{
+    if(err||rows.length===0){ return res.status(400).json({message:'Invalid product'}); }
+    const price = rows[0].price; const total = Number(price) * Number(qty);
+    const insertQ = 'INSERT INTO orders (buyer_name,phone,product_id,qty,total,status) VALUES (?,?,?,?,?,\'NEW\')';
+    connection.query(insertQ, [buyer_name,phone,product_id,qty,total], (err2, result)=>{
+      if(err2){ console.error('Error creating order:', err2); return res.status(500).json({message:'Error creating order'}); }
+      connection.query('UPDATE products SET stock=GREATEST(stock-?,0) WHERE id=?', [qty, product_id]);
+      res.status(201).json({ id: result.insertId, total });
+    });
+  });
+});
+
+app.put('/api/orders/:id/status', requireAdmin, (req,res)=>{
+  const { status } = req.body;
+  connection.query('UPDATE orders SET status=? WHERE id=?', [status, req.params.id], (err)=>{
+    if(err){ console.error('Error updating status:', err); return res.status(500).json({message:'Error updating status'}); }
+    res.json({ ok:true });
+  });
+});
+
+// Album
+app.get('/api/media', (req,res)=>{
+  connection.query('SELECT * FROM media ORDER BY id DESC', (err,rows)=>{
+    if(err){ return res.status(500).json({message:'Error fetching album'}); }
+    res.json(rows);
+  });
+});
+
+// Downloads
+app.get('/api/export/products.csv', requireAdmin, (req,res)=>{
+  connection.query('SELECT id,name,category,price,unit,stock FROM products', (err,rows)=>{
+    if(err){ return res.status(500).send('Export error'); }
+    const parser = new Parser();
+    const csv = parser.parse(rows);
+    res.setHeader('Content-Type','text/csv');
+    res.setHeader('Content-Disposition','attachment; filename=\"products.csv\"');
+    res.send(csv);
+  });
+});
+
+app.get('/api/export/orders.csv', requireAdmin, (req,res)=>{
+  const q = `SELECT o.id,o.buyer_name,o.phone,p.name AS product,o.qty,o.total,o.status,o.created_at
+             FROM orders o JOIN products p ON p.id=o.product_id ORDER BY o.id DESC`;
+  connection.query(q, (err,rows)=>{
+    if(err){ return res.status(500).send('Export error'); }
+    const parser = new Parser();
+    const csv = parser.parse(rows);
+    res.setHeader('Content-Type','text/csv');
+    res.setHeader('Content-Disposition','attachment; filename=\"orders.csv\"');
+    res.send(csv);
+  });
+});
+
+const port = process.env.PORT || 3000;
+app.listen(port, ()=> console.log(`Server listening on port ${port}`));

@@ -1,0 +1,5 @@
+:root{ --brand: #198754; }
+a{ text-decoration: none; }
+.navbar-brand{ font-weight: 700; }
+.card img{ object-fit: cover; height: 160px; }
+.btn-success{ background: var(--brand); border-color: var(--brand); }
