@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS orders (
   id INT PRIMARY KEY AUTO_INCREMENT,
   buyer_name VARCHAR(120) NOT NULL,
   phone VARCHAR(32),
+  delivery_address TEXT,
   product_id INT NOT NULL,
   qty INT NOT NULL,
   total DECIMAL(10,2) NOT NULL,

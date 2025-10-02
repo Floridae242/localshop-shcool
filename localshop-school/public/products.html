@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 </head>
 <body>
     <!-- Enhanced Navigation -->
@@ -26,7 +27,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="about.html">
+                        <a class="nav-link" href="index.html#about">
                             <i class="fas fa-info-circle me-1"></i>เกี่ยวกับ
                         </a>
                     </li>
@@ -60,13 +61,16 @@
                 </div>
                 <div class="col-lg-4 text-end">
                     <div class="d-flex gap-2 justify-content-end flex-wrap">
-                        <button class="btn btn-outline-success" onclick="filterProducts('all')">
+                        <button class="btn btn-outline-primary" onclick="window.openQRScanner()">
+                            <i class="fas fa-camera me-1"></i>สแกน QR
+                        </button>
+                        <button class="btn btn-outline-success" onclick="window.filterProducts('all')">
                             <i class="fas fa-th me-1"></i>ทั้งหมด
                         </button>
-                        <button class="btn btn-outline-success" onclick="filterProducts('vegetable')">
+                        <button class="btn btn-outline-success" onclick="window.filterProducts('vegetable')">
                             <i class="fas fa-carrot me-1"></i>ผัก
                         </button>
-                        <button class="btn btn-outline-success" onclick="filterProducts('herb')">
+                        <button class="btn btn-outline-success" onclick="window.filterProducts('herb')">
                             <i class="fas fa-leaf me-1"></i>สมุนไพร
                         </button>
                     </div>
@@ -86,16 +90,55 @@
 
     <!-- QR Scanner Modal -->
     <div class="modal fade" id="qrModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-success text-white">
                     <h5 class="modal-title">
                         <i class="fas fa-qrcode me-2"></i>ข้อมูลการตรวจสอบย้อนกลับ
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" id="qr-info">
                     <!-- QR info will be displayed here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-success" onclick="window.downloadQRCode()">
+                        <i class="fas fa-download me-1"></i>ดาวน์โหลด QR Code
+                    </button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">
+                        <i class="fas fa-check me-1"></i>ปิด
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Scanner Modal -->
+    <div class="modal fade" id="qrScannerModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-camera me-2"></i>สแกน QR Code
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div id="qr-reader" style="width: 100%;"></div>
+                    <div id="qr-result" class="mt-3" style="display: none;">
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <span id="qr-result-text"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" onclick="window.startQRScanner()">
+                        <i class="fas fa-play me-1"></i>เริ่มสแกน
+                    </button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>ปิด
+                    </button>
                 </div>
             </div>
         </div>
@@ -109,6 +152,22 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+    <script>
+        // Check if libraries are loaded before loading products.js
+        window.addEventListener('load', function() {
+            console.log('Page loaded, checking libraries...');
+            console.log('Bootstrap:', typeof bootstrap !== 'undefined');
+            console.log('QRCode:', typeof qrcode !== 'undefined');
+            console.log('Html5Qrcode:', typeof Html5QrcodeScanner !== 'undefined');
+            
+            if (typeof qrcode === 'undefined') {
+                console.error('QRCode library failed to load');
+                alert('QRCode library ไม่ได้ถูกโหลด กรุณารีเฟรชหน้าเว็บ');
+            }
+        });
+    </script>
     <script src="js/products.js"></script>
 </body>
 </html>

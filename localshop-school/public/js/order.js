@@ -2,6 +2,12 @@
 let products = [];
 let selectedProduct = null;
 
+// Get product ID from URL parameters
+function getProductIdFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('product');
+}
+
 // Sample products for static hosting
 const sampleProducts = [
     { id: 1, name: 'ผักกาดขาว', price: 25.00, unit: 'กิโลกรัม', stock: 50 },
@@ -15,34 +21,69 @@ const sampleProducts = [
 // Load products into dropdown
 async function loadProducts() {
     try {
-        // Try API first, fallback to sample data
-        try {
-            const response = await fetch('/api/products');
-            if (response.ok) {
-                products = await response.json();
-            } else {
-                throw new Error('API not available');
-            }
-        } catch {
-            products = sampleProducts;
+        // Fetch from API
+            const response = await fetch('http://localhost:3000/api/products');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
+        products = await response.json();
+        
+        // Filter products that have stock > 0
+        const availableProducts = products.filter(p => p.stock > 0);
 
         const select = document.getElementById('productSelect');
         select.innerHTML = '<option value="">เลือกสินค้า...</option>' + 
-            products.map(p => `
+            availableProducts.map(p => `
                 <option value="${p.id}" data-price="${p.price}" data-unit="${p.unit}" data-stock="${p.stock}">
-                    ${p.name} — ฿${p.price.toFixed(2)}/${p.unit} (คงเหลือ: ${p.stock})
+                    ${p.name} — ฿${parseFloat(p.price).toFixed(2)}/${p.unit} (คงเหลือ: ${p.stock})
                 </option>
             `).join('');
 
         // Add change listener for product selection
         select.addEventListener('change', handleProductChange);
+        
+        // Auto-select product if ID is provided in URL
+        const productId = getProductIdFromURL();
+        if (productId) {
+            const product = products.find(p => p.id == productId);
+            if (product && product.stock > 0) {
+                select.value = productId;
+                handleProductChange({ target: select });
+                
+                // Show success message
+                document.getElementById('msg').innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        เลือกสินค้า "${product.name}" เรียบร้อยแล้ว กรุณากรอกข้อมูลการสั่งซื้อ
+                    </div>
+                `;
+            } else {
+                document.getElementById('msg').innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle me-2"></i>
+                        สินค้าที่เลือกไม่มีในสต็อกหรือไม่พบ กรุณาเลือกสินค้าอื่น
+                    </div>
+                `;
+            }
+        }
+        
+        // Show message if no products available
+        if (availableProducts.length === 0) {
+            document.getElementById('msg').innerHTML = `
+                <div class="alert alert-warning">
+                    <i class="fas fa-info-circle me-2"></i>
+                    ขณะนี้ไม่มีสินค้าพร้อมจำหน่าย กรุณาติดต่อโรงเรียน
+                </div>
+            `;
+        }
+        
     } catch (error) {
         console.error('Error loading products:', error);
         document.getElementById('msg').innerHTML = `
             <div class="alert alert-danger">
                 <i class="fas fa-exclamation-triangle me-2"></i>
-                ไม่สามารถโหลดรายการสินค้าได้
+                ไม่สามารถโหลดรายการสินค้าได้ กรุณาติดต่อโรงเรียน
             </div>
         `;
     }
@@ -82,7 +123,7 @@ function updateOrderSummary() {
     document.getElementById('summaryContent').innerHTML = `
         <div class="row g-2">
             <div class="col-8"><strong>${selectedProduct.name}</strong></div>
-            <div class="col-4 text-end">฿${selectedProduct.price.toFixed(2)}/${selectedProduct.unit}</div>
+            <div class="col-4 text-end">฿${parseFloat(selectedProduct.price).toFixed(2)}/${selectedProduct.unit}</div>
             <div class="col-8">จำนวน: ${qty} ${selectedProduct.unit}</div>
             <div class="col-4 text-end"><strong class="text-success">฿${total.toFixed(2)}</strong></div>
         </div>
@@ -150,29 +191,19 @@ async function submitOrder(formData) {
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>กำลังดำเนินการ...';
         submitBtn.disabled = true;
         
-        // Try to submit to API
-        let orderResult;
-        try {
-            const response = await fetch('/api/orders', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
-            
-            if (response.ok) {
-                orderResult = await response.json();
-            } else {
-                throw new Error('API submission failed');
-            }
-        } catch {
-            // Simulate success for static hosting
-            orderResult = {
-                id: Date.now(),
-                total: selectedProduct.price * parseInt(formData.qty),
-                qr_code: `QR${Date.now()}`,
-                success: true
-            };
+        // Submit to API
+            const response = await fetch('http://localhost:3000/api/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'การส่งคำสั่งซื้อล้มเหลว');
         }
+        
+        const orderResult = await response.json();
         
         // Show success
         showSuccessModal(orderResult, formData);

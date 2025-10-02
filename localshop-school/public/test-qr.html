@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test QR Code</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>ทดสอบ QR Code</h1>
+        <div id="qr-container" class="text-center">
+            <div class="spinner-border text-success" role="status">
+                <span class="visually-hidden">กำลังสร้าง QR Code...</span>
+            </div>
+        </div>
+        <button class="btn btn-primary mt-3" onclick="generateQR()">สร้าง QR Code</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+    <script>
+        function generateQR() {
+            console.log('QRCode library loaded:', typeof qrcode !== 'undefined');
+            
+            if (typeof qrcode === 'undefined') {
+                document.getElementById('qr-container').innerHTML = '<div class="alert alert-danger">QRCode library ไม่ได้ถูกโหลด</div>';
+                return;
+            }
+            
+            try {
+                // Generate QR Code using qrcode-generator library
+                const qr = qrcode(0, 'M');
+                qr.addData('Hello World');
+                qr.make();
+                
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const size = 200;
+                const moduleCount = qr.getModuleCount();
+                const cellSize = Math.floor(size / moduleCount);
+                const actualSize = cellSize * moduleCount;
+                
+                canvas.width = actualSize;
+                canvas.height = actualSize;
+                
+                // Fill background
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, actualSize, actualSize);
+                
+                // Draw QR Code
+                ctx.fillStyle = '#198754';
+                for (let row = 0; row < moduleCount; row++) {
+                    for (let col = 0; col < moduleCount; col++) {
+                        if (qr.isDark(row, col)) {
+                            ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+                        }
+                    }
+                }
+                
+                console.log('QR Code generated successfully');
+                document.getElementById('qr-container').innerHTML = '';
+                document.getElementById('qr-container').appendChild(canvas);
+                
+            } catch (error) {
+                console.error('QR Code generation error:', error);
+                document.getElementById('qr-container').innerHTML = '<div class="alert alert-warning">ไม่สามารถสร้าง QR Code ได้</div>';
+            }
+        }
+        
+        // Auto generate on page load
+        window.addEventListener('load', function() {
+            setTimeout(generateQR, 1000);
+        });
+    </script>
+</body>
+</html>

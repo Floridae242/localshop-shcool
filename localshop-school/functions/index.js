@@ -18,8 +18,8 @@ app.use(express.urlencoded({ extended: true }));
 // Database Configuration
 const dbConfig = {
   host: functions.config().db?.host || 'localhost',
-  user: functions.config().db?.user || 'app',
-  password: functions.config().db?.password || 'password',
+  user: functions.config().db?.user || 'root',
+  password: functions.config().db?.password || '',
   database: functions.config().db?.name || 'localshop_school',
   port: functions.config().db?.port || 3306,
   ssl: functions.config().db?.ssl === 'true' ? {

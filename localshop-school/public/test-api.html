@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ทดสอบ API - AgriLink School Model</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container py-5">
+        <h1 class="text-center mb-5">🧪 ทดสอบการเชื่อมต่อ API</h1>
+        
+        <div class="row g-4">
+            <!-- System Health Test -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h5><i class="fas fa-heartbeat me-2"></i>ทดสอบ System Health</h5>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-dark mb-2" onclick="testHealthAPI()">
+                            <i class="fas fa-play me-1"></i>ทดสอบ GET /api/health
+                        </button>
+                        <button class="btn btn-outline-dark mb-3" onclick="testAPIInfo()">
+                            <i class="fas fa-info me-1"></i>ทดสอบ GET /api
+                        </button>
+                        <div id="health-result" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Products API Test -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5><i class="fas fa-leaf me-2"></i>ทดสอบ Products API</h5>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-success mb-2" onclick="testProductsAPI()">
+                            <i class="fas fa-play me-1"></i>ทดสอบ GET /api/products
+                        </button>
+                        <button class="btn btn-outline-success mb-3" onclick="testProductCategories()">
+                            <i class="fas fa-tags me-1"></i>ทดสอบ GET /api/products/categories
+                        </button>
+                        <div id="products-result" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Orders API Test -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5><i class="fas fa-shopping-cart me-2"></i>ทดสอบ Orders API</h5>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-info mb-2" onclick="testOrdersAPI()">
+                            <i class="fas fa-play me-1"></i>ทดสอบ GET /api/orders
+                        </button>
+                        <button class="btn btn-outline-info mb-3" onclick="testCreateOrder()">
+                            <i class="fas fa-plus me-1"></i>ทดสอบ POST /api/orders
+                        </button>
+                        <div id="orders-result" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Media API Test -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h5><i class="fas fa-images me-2"></i>ทดสอบ Media API</h5>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-warning mb-3" onclick="testMediaAPI()">
+                            <i class="fas fa-play me-1"></i>ทดสอบ GET /api/media
+                        </button>
+                        <div id="media-result" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Search API Test -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h5><i class="fas fa-search me-2"></i>ทดสอบ Search API</h5>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-secondary mb-2" onclick="testSearchProducts()">
+                            <i class="fas fa-search me-1"></i>ค้นหาสินค้า
+                        </button>
+                        <button class="btn btn-outline-secondary mb-3" onclick="testSearchOrders()">
+                            <i class="fas fa-search me-1"></i>ค้นหาคำสั่งซื้อ
+                        </button>
+                        <div id="search-result" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Statistics API Test -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5><i class="fas fa-chart-bar me-2"></i>ทดสอบ Statistics API</h5>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-primary mb-2" onclick="testStatsAPI()">
+                            <i class="fas fa-chart-bar me-1"></i>ทดสอบ GET /api/stats
+                        </button>
+                        <button class="btn btn-outline-primary mb-3" onclick="testDashboardAPI()">
+                            <i class="fas fa-tachometer-alt me-1"></i>ทดสอบ GET /api/dashboard
+                        </button>
+                        <div id="stats-result" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Overall Status -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h5><i class="fas fa-chart-line me-2"></i>สถานะการเชื่อมต่อ</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="overall-status" class="text-center">
+                            <p class="text-muted">กดปุ่มทดสอบข้างต้นเพื่อดูผลลัพธ์</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let testResults = {
+            health: false,
+            apiInfo: false,
+            products: false,
+            categories: false,
+            orders: false,
+            media: false,
+            search: false,
+            stats: false,
+            dashboard: false,
+            createOrder: false
+        };
+
+        async function testProductsAPI() {
+            const resultDiv = document.getElementById('products-result');
+            resultDiv.innerHTML = '<div class="spinner-border text-success" role="status"></div> กำลังทดสอบ...';
+            
+            try {
+                const response = await fetch('/api/products');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>สำเร็จ!</strong> โหลดสินค้าได้ ${data.length} รายการ
+                            <pre class="mt-2 small">${JSON.stringify(data.slice(0, 2), null, 2)}</pre>
+                        </div>
+                    `;
+                    testResults.products = true;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${data.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle me-2"></i>
+                        <strong>ล้มเหลว!</strong> ${error.message}
+                    </div>
+                `;
+                testResults.products = false;
+            }
+            
+            updateOverallStatus();
+        }
+
+        async function testOrdersAPI() {
+            const resultDiv = document.getElementById('orders-result');
+            resultDiv.innerHTML = '<div class="spinner-border text-info" role="status"></div> กำลังทดสอบ...';
+            
+            try {
+                const response = await fetch('/api/orders');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>สำเร็จ!</strong> โหลดคำสั่งซื้อได้ ${data.length} รายการ
+                            <pre class="mt-2 small">${JSON.stringify(data.slice(0, 2), null, 2)}</pre>
+                        </div>
+                    `;
+                    testResults.orders = true;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${data.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle me-2"></i>
+                        <strong>ล้มเหลว!</strong> ${error.message}
+                    </div>
+                `;
+                testResults.orders = false;
+            }
+            
+            updateOverallStatus();
+        }
+
+        async function testMediaAPI() {
+            const resultDiv = document.getElementById('media-result');
+            resultDiv.innerHTML = '<div class="spinner-border text-warning" role="status"></div> กำลังทดสอบ...';
+            
+            try {
+                const response = await fetch('/api/media');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>สำเร็จ!</strong> โหลดสื่อได้ ${data.length} รายการ
+                            <pre class="mt-2 small">${JSON.stringify(data.slice(0, 2), null, 2)}</pre>
+                        </div>
+                    `;
+                    testResults.media = true;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${data.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle me-2"></i>
+                        <strong>ล้มเหลว!</strong> ${error.message}
+                    </div>
+                `;
+                testResults.media = false;
+            }
+            
+            updateOverallStatus();
+        }
+
+        async function testCreateOrder() {
+            const resultDiv = document.getElementById('order-create-result');
+            resultDiv.innerHTML = '<div class="spinner-border text-primary" role="status"></div> กำลังทดสอบ...';
+            
+            try {
+                const testOrder = {
+                    buyer_name: 'ทดสอบ API',
+                    phone: '0812345678',
+                    product_id: 1,
+                    qty: 1
+                };
+                
+                const response = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(testOrder)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>สำเร็จ!</strong> สร้างคำสั่งซื้อได้
+                            <pre class="mt-2 small">${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                    testResults.createOrder = true;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${data.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle me-2"></i>
+                        <strong>ล้มเหลว!</strong> ${error.message}
+                    </div>
+                `;
+                testResults.createOrder = false;
+            }
+            
+            updateOverallStatus();
+        }
+
+        // New test functions
+        async function testHealthAPI() {
+            const resultDiv = document.getElementById('health-result');
+            resultDiv.innerHTML = '<div class="spinner-border text-dark" role="status"></div> กำลังทดสอบ...';
+            
+            try {
+                const response = await fetch('/api/health');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>สำเร็จ!</strong> ระบบทำงานปกติ
+                            <pre class="mt-2 small">${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                    testResults.health = true;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${data.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle me-2"></i>
+                        <strong>ล้มเหลว!</strong> ${error.message}
+                    </div>
+                `;
+                testResults.health = false;
+            }
+            
+            updateOverallStatus();
+        }
+
+        async function testAPIInfo() {
+            const resultDiv = document.getElementById('health-result');
+            resultDiv.innerHTML = '<div class="spinner-border text-dark" role="status"></div> กำลังทดสอบ...';
+            
+            try {
+                const response = await fetch('/api');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>สำเร็จ!</strong> API ข้อมูล
+                            <pre class="mt-2 small">${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                    testResults.apiInfo = true;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${data.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle me-2"></i>
+                        <strong>ล้มเหลว!</strong> ${error.message}
+                    </div>
+                `;
+                testResults.apiInfo = false;
+            }
+            
+            updateOverallStatus();
+        }
+
+        async function testProductCategories() {
+            const resultDiv = document.getElementById('products-result');
+            resultDiv.innerHTML = '<div class="spinner-border text-success" role="status"></div> กำลังทดสอบ...';
+            
+            try {
+                const response = await fetch('/api/products/categories');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>สำเร็จ!</strong> หมวดหมู่สินค้า: ${data.join(', ')}
+                        </div>
+                    `;
+                    testResults.categories = true;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${data.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle me-2"></i>
+                        <strong>ล้มเหลว!</strong> ${error.message}
+                    </div>
+                `;
+                testResults.categories = false;
+            }
+            
+            updateOverallStatus();
+        }
+
+        async function testSearchProducts() {
+            const resultDiv = document.getElementById('search-result');
+            resultDiv.innerHTML = '<div class="spinner-border text-secondary" role="status"></div> กำลังทดสอบ...';
+            
+            try {
+                const response = await fetch('/api/search?q=ผัก&type=products');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>สำเร็จ!</strong> ค้นหาสินค้าได้ ${data.length} รายการ
+                            <pre class="mt-2 small">${JSON.stringify(data.slice(0, 2), null, 2)}</pre>
+                        </div>
+                    `;
+                    testResults.search = true;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${data.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle me-2"></i>
+                        <strong>ล้มเหลว!</strong> ${error.message}
+                    </div>
+                `;
+                testResults.search = false;
+            }
+            
+            updateOverallStatus();
+        }
+
+        async function testSearchOrders() {
+            const resultDiv = document.getElementById('search-result');
+            resultDiv.innerHTML = '<div class="spinner-border text-secondary" role="status"></div> กำลังทดสอบ...';
+            
+            try {
+                const response = await fetch('/api/search?q=0812345678&type=orders');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>สำเร็จ!</strong> ค้นหาคำสั่งซื้อได้ ${data.length} รายการ
+                            <pre class="mt-2 small">${JSON.stringify(data.slice(0, 2), null, 2)}</pre>
+                        </div>
+                    `;
+                    testResults.search = true;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${data.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle me-2"></i>
+                        <strong>ล้มเหลว!</strong> ${error.message}
+                    </div>
+                `;
+                testResults.search = false;
+            }
+            
+            updateOverallStatus();
+        }
+
+        async function testStatsAPI() {
+            const resultDiv = document.getElementById('stats-result');
+            resultDiv.innerHTML = '<div class="spinner-border text-primary" role="status"></div> กำลังทดสอบ...';
+            
+            try {
+                const response = await fetch('/api/stats', {
+                    headers: { 'x-admin-pass': 'admin123' }
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>สำเร็จ!</strong> สถิติระบบ
+                            <pre class="mt-2 small">${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                    testResults.stats = true;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${data.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle me-2"></i>
+                        <strong>ล้มเหลว!</strong> ${error.message}
+                    </div>
+                `;
+                testResults.stats = false;
+            }
+            
+            updateOverallStatus();
+        }
+
+        async function testDashboardAPI() {
+            const resultDiv = document.getElementById('stats-result');
+            resultDiv.innerHTML = '<div class="spinner-border text-primary" role="status"></div> กำลังทดสอบ...';
+            
+            try {
+                const response = await fetch('/api/dashboard', {
+                    headers: { 'x-admin-pass': 'admin123' }
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>สำเร็จ!</strong> ข้อมูล Dashboard
+                            <pre class="mt-2 small">${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                    testResults.dashboard = true;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${data.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle me-2"></i>
+                        <strong>ล้มเหลว!</strong> ${error.message}
+                    </div>
+                `;
+                testResults.dashboard = false;
+            }
+            
+            updateOverallStatus();
+        }
+
+        function updateOverallStatus() {
+            const statusDiv = document.getElementById('overall-status');
+            const passedTests = Object.values(testResults).filter(Boolean).length;
+            const totalTests = Object.keys(testResults).length;
+            
+            if (passedTests === totalTests) {
+                statusDiv.innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>ยอดเยี่ยม!</strong> ทดสอบผ่านทั้งหมด ${passedTests}/${totalTests} ข้อ
+                    </div>
+                `;
+            } else if (passedTests > 0) {
+                statusDiv.innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>บางส่วนผ่าน</strong> ทดสอบผ่าน ${passedTests}/${totalTests} ข้อ
+                    </div>
+                `;
+            } else {
+                statusDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle me-2"></i>
+                        <strong>ล้มเหลวทั้งหมด</strong> ไม่สามารถเชื่อมต่อ API ได้
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

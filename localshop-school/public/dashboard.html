@@ -3,249 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบจัดการ - AgriLink School Model</title>
+    <title>ระบบจัดการ Admin - AgriLink School Model</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: translateX(5px);
+        }
+        .main-content {
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .table-responsive {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        .btn-action {
+            padding: 5px 10px;
+            margin: 2px;
+            border-radius: 8px;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+        }
+        #salesChart {
+            max-height: 300px !important;
+            height: 300px !important;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-    <!-- Enhanced Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="index.html">
-                <i class="fas fa-seedling me-2"></i>AgriLink School
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">
-                            <i class="fas fa-home me-1"></i>หน้าแรก
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="about.html">
-                            <i class="fas fa-info-circle me-1"></i>เกี่ยวกับ
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="products.html">
-                            <i class="fas fa-leaf me-1"></i>สินค้า
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="order.html">
-                            <i class="fas fa-shopping-cart me-1"></i>สั่งซื้อ
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="dashboard.html">
-                            <i class="fas fa-tachometer-alt me-1"></i>จัดการ
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Page Header -->
-    <section class="py-5 mt-5 bg-light">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-8">
-                    <h1 class="display-5 fw-bold text-success mb-3">ระบบจัดการสำหรับครู</h1>
-                    <p class="lead text-muted">จัดการสินค้า คำสั่งซื้อ และข้อมูลต่างๆ ของแปลงปลูกโรงเรียน</p>
-                </div>
-                <div class="col-lg-4">
-                    <div class="text-center">
-                        <i class="fas fa-cogs text-success" style="font-size: 4rem;"></i>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar p-0">
+                <div class="p-4">
+                    <h4 class="text-center mb-4">
+                        <i class="fas fa-user-shield me-2"></i>Admin Panel
+                    </h4>
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-circle fa-3x mb-2"></i>
+                        <p class="mb-0" id="adminName">Admin</p>
+                        <small class="opacity-75">ผู้ดูแลระบบ</small>
                     </div>
                 </div>
+                
+                <nav class="nav flex-column px-3">
+                    <a class="nav-link active" href="#dashboard" onclick="showSection('dashboard')">
+                        <i class="fas fa-tachometer-alt me-2"></i>ภาพรวม
+                    </a>
+                    <a class="nav-link" href="#products" onclick="showSection('products')">
+                        <i class="fas fa-leaf me-2"></i>จัดการสินค้า
+                    </a>
+                    <a class="nav-link" href="#orders" onclick="showSection('orders')">
+                        <i class="fas fa-shopping-cart me-2"></i>คำสั่งซื้อ
+                    </a>
+                    <a class="nav-link" href="#media" onclick="showSection('media')">
+                        <i class="fas fa-images me-2"></i>จัดการสื่อ
+                    </a>
+                    <a class="nav-link" href="#analytics" onclick="showSection('analytics')">
+                        <i class="fas fa-chart-bar me-2"></i>รายงาน
+                    </a>
+                    <a class="nav-link" href="#settings" onclick="showSection('settings')">
+                        <i class="fas fa-cog me-2"></i>ตั้งค่า
+                    </a>
+                </nav>
+                
+                <div class="mt-auto p-3">
+                    <button class="btn btn-outline-light w-100" onclick="logout()">
+                        <i class="fas fa-sign-out-alt me-2"></i>ออกจากระบบ
+                    </button>
+                </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Admin Authentication -->
-    <section class="py-4" id="authSection">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="card shadow-lg border-0">
-                        <div class="card-header bg-warning text-dark">
-                            <h5 class="mb-0">
-                                <i class="fas fa-lock me-2"></i>ยืนยันตัวตน
-                            </h5>
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="p-4">
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 id="pageTitle">ภาพรวมระบบ</h2>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary" onclick="refreshData()">
+                                <i class="fas fa-sync-alt me-1"></i>รีเฟรช
+                            </button>
+                            <button class="btn btn-success" onclick="exportData()">
+                                <i class="fas fa-download me-1"></i>ส่งออกข้อมูล
+                            </button>
                         </div>
-                        <div class="card-body">
-                            <p class="text-muted">กรุณาใส่รหัสผู้ดูแลระบบ</p>
-                            <div class="input-group">
-                                <input type="password" class="form-control" id="adminPass" placeholder="รหัสผู้ดูแล">
-                                <button class="btn btn-success" id="setPass">
-                                    <i class="fas fa-key me-1"></i>เข้าสู่ระบบ
+                    </div>
+
+                    <!-- Dashboard Section -->
+                    <div id="dashboard-section" class="content-section">
+                        <!-- Statistics Cards -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-3">
+                                <div class="stat-card p-4 text-center">
+                                    <i class="fas fa-leaf fa-2x text-success mb-3"></i>
+                                    <h3 class="mb-1" id="totalProducts">-</h3>
+                                    <p class="text-muted mb-0">สินค้าทั้งหมด</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card p-4 text-center">
+                                    <i class="fas fa-shopping-cart fa-2x text-primary mb-3"></i>
+                                    <h3 class="mb-1" id="totalOrders">-</h3>
+                                    <p class="text-muted mb-0">คำสั่งซื้อ</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card p-4 text-center">
+                                    <i class="fas fa-dollar-sign fa-2x text-warning mb-3"></i>
+                                    <h3 class="mb-1" id="totalRevenue">-</h3>
+                                    <p class="text-muted mb-0">รายได้รวม</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card p-4 text-center">
+                                    <i class="fas fa-exclamation-triangle fa-2x text-danger mb-3"></i>
+                                    <h3 class="mb-1" id="lowStockItems">-</h3>
+                                    <p class="text-muted mb-0">สินค้าใกล้หมด</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Orders -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="stat-card p-4">
+                                    <h5 class="mb-3">
+                                        <i class="fas fa-clock me-2"></i>คำสั่งซื้อล่าสุด
+                                    </h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>หมายเลข</th>
+                                                    <th>ผู้ซื้อ</th>
+                                                    <th>สินค้า</th>
+                                                    <th>จำนวน</th>
+                                                    <th>ราคา</th>
+                                                    <th>สถานะ</th>
+                                                    <th>วันที่</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="recentOrdersTable">
+                                                <tr>
+                                                    <td colspan="7" class="text-center text-muted py-4">
+                                                        <i class="fas fa-spinner fa-spin me-2"></i>กำลังโหลด...
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Products Section -->
+                    <div id="products-section" class="content-section d-none">
+                        <div class="stat-card p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-leaf me-2"></i>จัดการสินค้า
+                                </h5>
+                                <button class="btn btn-success" onclick="showProductForm()">
+                                    <i class="fas fa-plus me-1"></i>เพิ่มสินค้าใหม่
                                 </button>
                             </div>
-                            <small class="text-muted">ใช้รหัส: admin สำหรับทดสอบ</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Dashboard Content -->
-    <section class="py-4 d-none" id="dashboardContent">
-        <div class="container">
-            <!-- Statistics Cards -->
-            <div class="row g-4 mb-5">
-                <div class="col-lg-3 col-md-6">
-                    <div class="card text-white bg-success">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 id="totalProducts">0</h4>
-                                    <p class="mb-0">สินค้าทั้งหมด</p>
+                            
+                            <!-- Product Form -->
+                            <div id="productForm" class="d-none mb-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-edit me-2"></i>
+                                            <span id="productFormTitle">เพิ่มสินค้าใหม่</span>
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-4">
+                                                <label class="form-label">ชื่อสินค้า <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="productName" required>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">หมวดหมู่ <span class="text-danger">*</span></label>
+                                                <select class="form-select" id="productCategory">
+                                                    <option value="Vegetable">ผัก</option>
+                                                    <option value="Mushroom">เห็ด</option>
+                                                    <option value="Fish">ปลา</option>
+                                                    <option value="Egg">ไข่</option>
+                                                    <option value="Frog">กบ</option>
+                                                    <option value="Herb">สมุนไพร</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">ราคา (บาท) <span class="text-danger">*</span></label>
+                                                <input type="number" class="form-control" id="productPrice" step="0.01" required>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">หน่วย <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="productUnit" placeholder="กิโลกรัม, กำ, แพ็ค" required>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">จำนวนในสต็อก <span class="text-danger">*</span></label>
+                                                <input type="number" class="form-control" id="productStock" required>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">รูปภาพ (URL)</label>
+                                                <input type="url" class="form-control" id="productImage" placeholder="https://example.com/image.jpg">
+                                            </div>
+                                            <div class="col-12">
+                                                <button class="btn btn-primary" onclick="saveProduct()">
+                                                    <i class="fas fa-save me-1"></i>บันทึก
+                                                </button>
+                                                <button class="btn btn-secondary ms-2" onclick="cancelProductForm()">
+                                                    <i class="fas fa-times me-1"></i>ยกเลิก
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <i class="fas fa-leaf fa-2x opacity-75"></i>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="card text-white bg-info">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 id="totalOrders">0</h4>
-                                    <p class="mb-0">คำสั่งซื้อ</p>
-                                </div>
-                                <i class="fas fa-shopping-cart fa-2x opacity-75"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="card text-white bg-warning">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 id="lowStockItems">0</h4>
-                                    <p class="mb-0">สินค้าเหลือน้อย</p>
-                                </div>
-                                <i class="fas fa-exclamation-triangle fa-2x opacity-75"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="card text-white bg-secondary">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 id="totalRevenue">฿0</h4>
-                                    <p class="mb-0">รายรับรวม</p>
-                                </div>
-                                <i class="fas fa-coins fa-2x opacity-75"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Action Buttons -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="d-flex gap-2 flex-wrap">
-                        <button class="btn btn-outline-success" id="dlProducts">
-                            <i class="fas fa-download me-1"></i>ดาวน์โหลด สินค้า CSV
-                        </button>
-                        <button class="btn btn-outline-info" id="dlOrders">
-                            <i class="fas fa-download me-1"></i>ดาวน์โหลด ออเดอร์ CSV
-                        </button>
-                        <button class="btn btn-outline-warning" onclick="generateQRCodes()">
-                            <i class="fas fa-qrcode me-1"></i>สร้าง QR Code
-                        </button>
-                        <button class="btn btn-outline-secondary" onclick="location.reload()">
-                            <i class="fas fa-sync me-1"></i>รีเฟรช
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product Management -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="card shadow-lg border-0">
-                        <div class="card-header bg-success text-white">
-                            <h4 class="mb-0">
-                                <i class="fas fa-leaf me-2"></i>จัดการสินค้า
-                            </h4>
-                        </div>
-                        <div class="card-body">
-                            <form id="productForm" class="row g-3 mb-4">
-                                <input type="hidden" name="id" />
-                                
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">ชื่อสินค้า</label>
-                                    <input class="form-control" name="name" placeholder="ชื่อสินค้า" required>
-                                </div>
-                                
-                                <div class="col-md-3">
-                                    <label class="form-label fw-bold">หมวดหมู่</label>
-                                    <select class="form-select" name="category" required>
-                                        <option value="">เลือกหมวดหมู่</option>
-                                        <option value="vegetable">ผัก</option>
-                                        <option value="herb">สมุนไพร</option>
-                                        <option value="mushroom">เห็ด</option>
-                                        <option value="fish">ปลา</option>
-                                        <option value="egg">ไข่</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="col-md-2">
-                                    <label class="form-label fw-bold">ราคา</label>
-                                    <input class="form-control" name="price" type="number" step="0.01" placeholder="ราคา" required>
-                                </div>
-                                
-                                <div class="col-md-2">
-                                    <label class="form-label fw-bold">หน่วย</label>
-                                    <select class="form-select" name="unit" required>
-                                        <option value="กิโลกรัม">กิโลกรัม</option>
-                                        <option value="กำ">กำ</option>
-                                        <option value="ใบ">ใบ</option>
-                                        <option value="ผล">ผล</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="col-md-1">
-                                    <label class="form-label fw-bold">สต็อก</label>
-                                    <input class="form-control" name="stock" type="number" placeholder="สต็อก" required>
-                                </div>
-                                
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">URL รูปภาพ</label>
-                                    <input class="form-control" name="image_url" placeholder="URL รูปภาพ">
-                                </div>
-                                
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">รายละเอียด</label>
-                                    <input class="form-control" name="description" placeholder="รายละเอียดสินค้า">
-                                </div>
-                                
-                                <div class="col-12">
-                                    <button type="submit" class="btn btn-success" id="saveBtn">
-                                        <i class="fas fa-save me-1"></i>บันทึก
-                                    </button>
-                                    <button type="button" class="btn btn-secondary" id="resetBtn">
-                                        <i class="fas fa-times me-1"></i>ล้างฟอร์ม
-                                    </button>
-                                </div>
-                            </form>
-
+                            <!-- Products Table -->
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover" id="productAdmin">
-                                    <thead class="table-success">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
                                         <tr>
                                             <th>ID</th>
                                             <th>รูป</th>
@@ -253,60 +271,207 @@
                                             <th>หมวดหมู่</th>
                                             <th>ราคา</th>
                                             <th>หน่วย</th>
-                                            <th>คงเหลือ</th>
-                                            <th>จัดการ</th>
+                                            <th>สต็อก</th>
+                                            <th>การจัดการ</th>
                                         </tr>
                                     </thead>
-                                    <tbody></tbody>
+                                    <tbody id="productsTable">
+                                        <tr>
+                                            <td colspan="8" class="text-center text-muted py-4">
+                                                <i class="fas fa-spinner fa-spin me-2"></i>กำลังโหลด...
+                                            </td>
+                                        </tr>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Orders Management -->
-            <div class="row mt-5">
-                <div class="col-12">
-                    <div class="card shadow-lg border-0">
-                        <div class="card-header bg-info text-white">
-                            <h4 class="mb-0">
+                    <!-- Orders Section -->
+                    <div id="orders-section" class="content-section d-none">
+                        <div class="stat-card p-4">
+                            <h5 class="mb-4">
                                 <i class="fas fa-shopping-cart me-2"></i>จัดการคำสั่งซื้อ
-                            </h4>
-                        </div>
-                        <div class="card-body">
+                            </h5>
+                            
+                            <!-- Order Filters -->
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-3">
+                                    <label class="form-label">สถานะ</label>
+                                    <select class="form-select" id="orderStatusFilter" onchange="filterOrders()">
+                                        <option value="">ทั้งหมด</option>
+                                        <option value="NEW">ใหม่</option>
+                                        <option value="CONFIRMED">ยืนยันแล้ว</option>
+                                        <option value="CANCELLED">ยกเลิก</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">วันที่เริ่มต้น</label>
+                                    <input type="date" class="form-control" id="dateFrom" onchange="filterOrders()">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">วันที่สิ้นสุด</label>
+                                    <input type="date" class="form-control" id="dateTo" onchange="filterOrders()">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">จำนวนรายการ</label>
+                                    <select class="form-select" id="orderLimit" onchange="filterOrders()">
+                                        <option value="50">50 รายการ</option>
+                                        <option value="100">100 รายการ</option>
+                                        <option value="200">200 รายการ</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Orders Table -->
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover" id="ordersTable">
-                                    <thead class="table-info">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
                                         <tr>
-                                            <th>ID</th>
+                                            <th>หมายเลข</th>
                                             <th>วันที่</th>
-                                            <th>ผู้สั่ง</th>
+                                            <th>ผู้ซื้อ</th>
                                             <th>โทรศัพท์</th>
+                                            <th>ที่อยู่จัดส่ง</th>
                                             <th>สินค้า</th>
                                             <th>จำนวน</th>
-                                            <th>ยอดรวม</th>
+                                            <th>ราคา</th>
                                             <th>สถานะ</th>
+                                            <th>การจัดการ</th>
                                         </tr>
                                     </thead>
-                                    <tbody></tbody>
+                                    <tbody id="ordersTable">
+                                        <tr>
+                                            <td colspan="10" class="text-center text-muted py-4">
+                                                <i class="fas fa-spinner fa-spin me-2"></i>กำลังโหลด...
+                                            </td>
+                                        </tr>
+                                    </tbody>
                                 </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Media Section -->
+                    <div id="media-section" class="content-section d-none">
+                        <div class="stat-card p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-images me-2"></i>จัดการสื่อ/อัลบั้ม
+                                </h5>
+                                <button class="btn btn-success" onclick="showMediaForm()">
+                                    <i class="fas fa-plus me-1"></i>เพิ่มสื่อใหม่
+                                </button>
+                            </div>
+                            
+                            <!-- Media Form -->
+                            <div id="mediaForm" class="d-none mb-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-plus me-2"></i>เพิ่มสื่อใหม่
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">ชื่อสื่อ <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="mediaTitle" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">URL รูปภาพ <span class="text-danger">*</span></label>
+                                                <input type="url" class="form-control" id="mediaUrl" required>
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label">คำอธิบาย</label>
+                                                <textarea class="form-control" id="mediaCaption" rows="3"></textarea>
+                                            </div>
+                                            <div class="col-12">
+                                                <button class="btn btn-primary" onclick="saveMedia()">
+                                                    <i class="fas fa-save me-1"></i>บันทึก
+                                                </button>
+                                                <button class="btn btn-secondary ms-2" onclick="cancelMediaForm()">
+                                                    <i class="fas fa-times me-1"></i>ยกเลิก
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Media Grid -->
+                            <div class="row g-3" id="mediaGrid">
+                                <div class="col-12 text-center text-muted py-4">
+                                    <i class="fas fa-spinner fa-spin me-2"></i>กำลังโหลด...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Section -->
+                    <div id="analytics-section" class="content-section d-none">
+                        <div class="stat-card p-4">
+                            <h5 class="mb-4">
+                                <i class="fas fa-chart-bar me-2"></i>รายงานและสถิติ
+                            </h5>
+                            
+                            <!-- Analytics Content -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>ยอดขายรายวัน (30 วันล่าสุด)</h6>
+                                    <div class="chart-container">
+                                        <canvas id="salesChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>สินค้าขายดี</h6>
+                                    <div id="topProducts"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Section -->
+                    <div id="settings-section" class="content-section d-none">
+                        <div class="stat-card p-4">
+                            <h5 class="mb-4">
+                                <i class="fas fa-cog me-2"></i>ตั้งค่าระบบ
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>ข้อมูลระบบ</h6>
+                                    <p><strong>เวอร์ชัน:</strong> 1.0.0</p>
+                                    <p><strong>ฐานข้อมูล:</strong> MySQL</p>
+                                    <p><strong>API:</strong> Node.js + Express</p>
+                                    <p><strong>สถานะ:</strong> <span class="badge bg-success">ออนไลน์</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>การบำรุงรักษา</h6>
+                                    <button class="btn btn-warning me-2" onclick="clearCache()">
+                                        <i class="fas fa-trash me-1"></i>ล้างแคช
+                                    </button>
+                                    <button class="btn btn-info me-2" onclick="exportAllData()">
+                                        <i class="fas fa-download me-1"></i>ส่งออกข้อมูลทั้งหมด
+                                    </button>
+                                    <button class="btn btn-danger" onclick="resetDatabase()">
+                                        <i class="fas fa-database me-1"></i>รีเซ็ตฐานข้อมูล
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Footer -->
-    <footer class="py-4 bg-success text-white text-center mt-5">
-        <div class="container">
-            <p class="mb-0">&copy; 2025 โรงเรียนบอเมืองน้อกขา | AgriLink School Model</p>
-        </div>
-    </footer>
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard-enhanced.js"></script>
 </body>
 </html>

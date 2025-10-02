@@ -293,54 +293,53 @@
             try {
                 showLoading('featured-products');
                 
-                // Simulate loading delay for better UX
-                await new Promise(resolve => setTimeout(resolve, 800));
+                // Fetch from API
+                const response = await fetch('http://localhost:3000/api/products');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 
-                const sampleProducts = [
-                    {
-                        id: 1,
-                        name: 'ผักกาดขาว',
-                        name_en: 'Chinese Cabbage',
-                        price: 25.00,
-                        image: 'img/lettuce.jpg',
-                        description: 'ผักกาดขาวสด ปลอดสารพิษ จากแปลงปลูกของโรงเรียน',
-                        badge: 'ยอดนิยม'
-                    },
-                    {
-                        id: 2,
-                        name: 'เห็ดนางฟ้า',
-                        name_en: 'Oyster Mushroom',
-                        price: 45.00,
-                        image: 'img/mushroom.jpg',
-                        description: 'เห็ดนางฟ้าสด ปลูกในโรงเรือนควบคุมอุณหภูมิ',
-                        badge: 'สินค้าใหม่'
-                    },
-                    {
-                        id: 3,
-                        name: 'แตงกวา',
-                        name_en: 'Cucumber',
-                        price: 20.00,
-                        image: 'img/cucumber.jpg',
-                        description: 'แตงกวาสด กรอบ หวาน ไร้สารเคมี',
-                        badge: 'ราคาดี'
-                    }
-                ];
+                const allProducts = await response.json();
+                
+                // Get first 3 products with stock > 0
+                const featuredProducts = allProducts
+                    .filter(p => p.stock > 0)
+                    .slice(0, 3)
+                    .map((product, index) => ({
+                        ...product,
+                        name_en: product.name_en || product.name,
+                        image: product.image_url || 'img/harvest.jpg',
+                        description: product.description || `ผลผลิตคุณภาพสูงจากโรงเรียนบ้านแม่ฮ้อยเงิน`,
+                        badge: index === 0 ? 'ยอดนิยม' : index === 1 ? 'สินค้าใหม่' : 'ราคาดี'
+                    }));
 
                 const container = document.getElementById('featured-products');
-                container.innerHTML = sampleProducts.map((product, index) => `
+                
+                if (featuredProducts.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-12 text-center py-5">
+                            <i class="fas fa-seedling text-muted fs-2 mb-3"></i>
+                            <h4>กำลังเตรียมผลผลิตใหม่</h4>
+                            <p class="text-muted">กรุณาติดต่อโรงเรียนเพื่อสอบถามข้อมูล</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = featuredProducts.map((product, index) => `
                     <div class="col-md-4" style="animation: fadeInUp 0.6s ease-out ${index * 0.2}s both;">
                         <div class="card product-card h-100 position-relative">
                             <div class="position-absolute top-0 end-0 m-3 z-3">
                                 <span class="badge bg-success">${product.badge}</span>
                             </div>
-                            <img src="${product.image}" class="card-img-top" alt="${product.name}" loading="lazy">
+                            <img src="${product.image}" class="card-img-top" alt="${product.name}" loading="lazy" style="height: 200px; object-fit: cover;">
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title fw-bold">${product.name}</h5>
-                                <p class="card-text text-muted small">${product.name_en}</p>
+                                <p class="card-text text-muted small mb-2">${product.name_en}</p>
                                 <p class="card-text">${product.description}</p>
                                 <div class="mt-auto">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="h5 text-success mb-0 fw-bold">฿${product.price.toFixed(2)}</span>
+                                        <span class="h5 text-success mb-0 fw-bold">฿${parseFloat(product.price).toFixed(2)}</span>
                                         <a href="products.html" class="btn btn-success btn-sm">
                                             <i class="fas fa-eye me-1"></i>ดูรายละเอียด
                                         </a>
@@ -373,10 +372,29 @@
             }
         });
 
+        // Load school album from API
+        async function loadSchoolAlbum() {
+            try {
+                const response = await fetch('http://localhost:3000/api/media');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const mediaItems = await response.json();
+                
+                // You can add album display logic here if needed
+                console.log('School album loaded:', mediaItems.length, 'items');
+                
+            } catch (error) {
+                console.error('Error loading school album:', error);
+            }
+        }
+
         // Initialize everything when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
-            // Load products
+            // Load products and album
             loadFeaturedProducts();
+            loadSchoolAlbum();
             
             // Add scroll listeners
             window.addEventListener('scroll', function() {
